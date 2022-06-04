@@ -9,7 +9,7 @@ The following are notes/steps I took when exploring [rearc/quest](https://github
 
 ## Step 2
 
-- Launched an EC2 Instance on Amazon Linux 64-bit x86/64 as the OS on a t2.micro instance. I already have a private key `.pem` file so I'll be using it for when I use SSH.
+- Launched an EC2 Instance on Amazon Linux 2 64-bit x86/64 as the OS on a t2.micro instance. I already have a private key `.pem` file so I'll be using it for when I use SSH.
 - To access the EC2 instance through SSH, I used the following command `ssh -i /path/my-key-pair.pem my-instance-user-name@my-instance-public-dns-name` ([reference](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)) in my terminal, replacing `/path/my-key-pair.pem` with my actual `.pem` path, `my-instance-user-name` with `ec2-user` as the default user, and `my-instance-public-dns-name` with the instance's public IPv4 address.
 - To upload the quest directory `quest-master` to the EC2 instance, I ran the command `scp -P 22 -r -i /path/my-key-pair.pem /path/my-directory ec2-user@my-instance-public-dns-name:~`.
   - `scp` is the secure copy protocol I used for transferring files from my local computer to the remote EC2 instance.
@@ -25,3 +25,15 @@ The following are notes/steps I took when exploring [rearc/quest](https://github
 - It also seems that I can't use HTTPS but HTTP produces results. I get a "This site can't provide a secure connection" error page when trying to access the public DNS on port 3000 with HTTPS. I assume step 7 may resolve this matter.
 
 ## Step 3
+
+- I learned some Docker concepts from ZeroToMastery Academy's first [Devops course](https://zerotomastery.io/courses/devops-bootcamp/) and Dockerfile commands (`FROM`, `ENV`, `COPY`, `RUN`, `EXPOSE`, `CMD`).
+- I installed Docker on the server and began working on the Dockerfile ([reference](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html)).
+- I added a Dockerfile and configured it accordingly using a base `node` image of node version 16.
+
+## Step 4
+
+- I have different methods available to adding environment variables to the container. For now I will add the secret word to the Dockerfile with the `ENV` keyword, though using a `.env` file or within the run command with a `-e` flag may be more secure in actual production apps. The secret word shows up on the index page regardless so I won't worry about this.
+
+## Step 5
+
+- Installed an application load balancer through the AWS management console. I had to add a listener for port 3000 so that end users can access the web page since that's where the application is hosted.
